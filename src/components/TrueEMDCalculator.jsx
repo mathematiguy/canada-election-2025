@@ -60,7 +60,7 @@ const TrueEMDCalculator = () => {
 
   // Initialize state
   const [actualResults, setActualResults] = useState({
-    LPC: 160, CPC: 119, NDP: 25, Green: 2, BQ: 32, PPC: 0
+    LPC: 168, CPC: 144, NDP: 7, Green: 1, BQ: 23, PPC: 0
   });
   const [standardResults, setStandardResults] = useState(null);
   const [trueEMDResults, setTrueEMDResults] = useState(null);

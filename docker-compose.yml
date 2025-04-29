@@ -1,18 +1,10 @@
-version: '3.8'
+version: '3'
 
 services:
   emd-calculator:
     build:
       context: .
       dockerfile: Dockerfile
-    container_name: emd-calculator
-    volumes:
-      - .:/app
-      - /app/node_modules
     ports:
-      - "3000:3000"
-    environment:
-      - CHOKIDAR_USEPOLLING=true
-      - NODE_ENV=development
-    stdin_open: true
-    tty: true
+      - "3000:80"  # Map container's port 80 to host's port 3000
+    restart: always

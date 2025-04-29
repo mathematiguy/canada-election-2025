@@ -1,0 +1,9 @@
+version: '3'
+services:
+  emd-calculator-prod:
+    build:
+      context: .
+      dockerfile: Dockerfile.prod
+    ports:
+      - "3000:80"
+    restart: always
