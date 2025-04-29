@@ -11,8 +11,6 @@ const TrueEMDCalculator = () => {
     "Gaurav": {LPC: 185, CPC: 134, NDP: 6, Green: 1, BQ: 17, PPC: 0}
   };
 
-  const lastElection = {LPC: 160, CPC: 119, NDP: 25, Green: 2, BQ: 32, PPC: 0};
-
   // Party coordinates from the political compass
   const partyCoordinates = {
     "NDP": { x: 1.75, y: 8.95 },
@@ -66,7 +64,6 @@ const TrueEMDCalculator = () => {
   const [trueEMDResults, setTrueEMDResults] = useState(null);
   const [bestPredictor, setBestPredictor] = useState(null);
   const [bestTrueEMDPredictor, setBestTrueEMDPredictor] = useState(null);
-  const [showLastYear, setShowLastYear] = useState(true);
   const [showPairwiseEMD, setShowPairwiseEMD] = useState(false);
   const [pairwiseResults, setPairwiseResults] = useState(null);
   const [consensusPredictor, setConsensusPredictor] = useState(null);
@@ -327,9 +324,8 @@ const TrueEMDCalculator = () => {
     setSortedPredictors(sorted);
   };
 
-  // Function to load last year's results
-  const loadLastYear = () => {
-    setActualResults(lastElection);
+  const loadActualResults = () => {
+      setActualResults(actualResults);
   };
 
   // Function to clear results
@@ -537,9 +533,9 @@ const TrueEMDCalculator = () => {
           >
             Calculate EMD
           </button>
-          {showLastYear && (
+          {actualResults && (
             <button
-              onClick={loadLastYear}
+              onClick={loadActualResults}
               className="bg-gray-600 text-white px-4 py-2 rounded hover:bg-gray-700"
             >
               Load Last Election
