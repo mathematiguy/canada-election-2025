@@ -8,6 +8,9 @@ start:
 build:
 	docker compose build
 
+build-app:
+	docker compose run --rm emd-calculator npm run build
+
 stop:
 	docker compose down
 
@@ -30,6 +33,23 @@ prod-deploy: prod-build
 prod-stop:
 	docker compose -f docker-compose.prod.yml down
 	@echo "Production service has been stopped"
+
+# Show production logs and status
+prod-logs:
+	@echo "Container status:"
+	docker compose -f docker-compose.prod.yml ps
+	@echo "\nContainer logs:"
+	docker compose -f docker-compose.prod.yml logs emd-calculator-prod --tail=50
+
+# Get SSL certificates
+prod-ssl-init:
+	./init-letsencrypt.sh
+
+# Enable HTTPS after certificates are obtained
+prod-ssl-enable:
+	cp nginx-ssl.conf nginx.conf
+	docker compose -f docker-compose.prod.yml restart emd-calculator
+	@echo "HTTPS enabled - your site is now available at https://mathematiguy.ddns.net:3443"
 
 # Cleanup temporary build files
 clean:
