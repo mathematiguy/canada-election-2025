@@ -73,6 +73,8 @@ const TrueEMDCalculator = () => {
   const [calculationDetails, setCalculationDetails] = useState(null);
   const [selectedPredictor, setSelectedPredictor] = useState(null);
   const [balanceSeats, setBalanceSeats] = useState(true);
+  // New state for sorted predictors
+  const [sortedPredictors, setSortedPredictors] = useState(Object.keys(initialProjections));
 
   // Parties constants
   const parties = ["LPC", "CPC", "NDP", "Green", "BQ", "PPC"];
@@ -262,6 +264,10 @@ const TrueEMDCalculator = () => {
     setTrueEMDResults(trueEMD);
     setBestPredictor(bestStandard);
     setBestTrueEMDPredictor(bestTrue);
+
+    // Sort predictors by True EMD (ascending order)
+    const sorted = Object.keys(trueEMD).sort((a, b) => trueEMD[a] - trueEMD[b]);
+    setSortedPredictors(sorted);
   };
 
   // Function to show calculation details for a predictor
@@ -312,9 +318,13 @@ const TrueEMDCalculator = () => {
       }
     }
 
+    // Sort predictors by average EMD (ascending order)
+    const sorted = Object.keys(avgEMDs).sort((a, b) => avgEMDs[a] - avgEMDs[b]);
+
     setPairwiseResults({ pairwiseEMDs, avgEMDs });
     setConsensusPredictor(consensus);
     setShowPairwiseEMD(true);
+    setSortedPredictors(sorted);
   };
 
   // Function to load last year's results
@@ -332,6 +342,7 @@ const TrueEMDCalculator = () => {
     setShowPairwiseEMD(false);
     setCalculationDetails(null);
     setSelectedPredictor(null);
+    setSortedPredictors(Object.keys(initialProjections));
   };
 
   return (
@@ -360,8 +371,11 @@ const TrueEMDCalculator = () => {
             <thead>
               <tr className="bg-gray-100">
                 <th className="border border-gray-300 p-2">Party</th>
-                {Object.keys(initialProjections).map(predictor => (
-                  <th key={predictor} className="border border-gray-300 p-2">{predictor}</th>
+                {sortedPredictors.map(predictor => (
+                  <th key={predictor} className="border border-gray-300 p-2">
+                    {predictor}
+                    {trueEMDResults && <div className="text-xs text-gray-500">(EMD: {trueEMDResults[predictor]})</div>}
+                  </th>
                 ))}
               </tr>
             </thead>
@@ -369,7 +383,7 @@ const TrueEMDCalculator = () => {
               {parties.map(party => (
                 <tr key={party}>
                   <th className="border border-gray-300 p-2 bg-gray-50">{party}</th>
-                  {Object.keys(initialProjections).map(predictor => (
+                  {sortedPredictors.map(predictor => (
                     <td key={`${predictor}-${party}`} className="border border-gray-300 p-2 text-center">
                       {initialProjections[predictor][party]}</td>
                   ))}
@@ -395,13 +409,13 @@ const TrueEMDCalculator = () => {
 
             {/* Party positions */}
             {Object.entries(partyCoordinates).map(([party, coords]) => {
-              // Convert coordinates to position in the div (0-10 scale to 0-100%)
-              const x = (coords.x / 10) * 100;
-              const y = 100 - ((coords.y / 10) * 100); // Invert Y axis
+                // Convert coordinates to position in the div (0-10 scale to 0-100%)
+                const x = (coords.x / 10) * 100;
+                const y = 100 - ((coords.y / 10) * 100); // Invert Y axis
 
-              // Determine party color
-              let color;
-              switch(party) {
+                // Determine party color
+                let color;
+                switch(party) {
                 case 'LPC': color = 'bg-red-600'; break;
                 case 'CPC': color = 'bg-blue-800'; break;
                 case 'NDP': color = 'bg-orange-500'; break;
@@ -409,19 +423,20 @@ const TrueEMDCalculator = () => {
                 case 'BQ': color = 'bg-blue-400'; break;
                 case 'PPC': color = 'bg-purple-800'; break;
                 default: color = 'bg-gray-500';
-              }
+                }
 
-              return (
-                <div
-                  key={party}
-                  className={`absolute w-4 h-4 ${color} rounded-full transform -translate-x-1/2 -translate-y-1/2 flex items-center justify-center text-xs text-white font-bold`}
-                  style={{ left: `${x}%`, top: `${y}%` }}
-                  title={`${party}: Economic=${coords.x}, Social=${coords.y}`}
-                >
-                  {party.charAt(0)}
-                </div>
-              );
+                return (
+                    <div
+                      key={party}
+                      className={`absolute w-4 h-4 ${color} rounded-full transform -translate-x-1/2 -translate-y-1/2 flex items-center justify-center text-xs text-white font-bold`}
+                      style={{ left: `${x}%`, top: `${y}%` }}
+                      title={`${party}: Economic=${coords.x}, Social=${coords.y}`}
+                    >
+                      {party.charAt(0)}
+                    </div>
+                );
             })}
+
           </div>
         </div>
 
@@ -445,17 +460,17 @@ const TrueEMDCalculator = () => {
               <thead>
                 <tr className="bg-gray-100">
                   <th className="border border-gray-300 p-2">Predictor</th>
-                  {Object.keys(initialProjections).map(predictor => (
+                  {sortedPredictors.map(predictor => (
                     <th key={predictor} className="border border-gray-300 p-2">{predictor}</th>
                   ))}
                   <th className="border border-gray-300 p-2 bg-yellow-50">Avg. EMD</th>
                 </tr>
               </thead>
               <tbody>
-                {Object.keys(pairwiseResults.pairwiseEMDs).map(predictor1 => (
+                {sortedPredictors.map(predictor1 => (
                   <tr key={predictor1} className={predictor1 === consensusPredictor ? "bg-green-50" : ""}>
                     <th className="border border-gray-300 p-2 bg-gray-50">{predictor1}</th>
-                    {Object.keys(pairwiseResults.pairwiseEMDs[predictor1]).map(predictor2 => (
+                    {sortedPredictors.map(predictor2 => (
                       <td
                         key={`${predictor1}-${predictor2}`}
                         className="border border-gray-300 p-2 text-center"
@@ -549,7 +564,7 @@ const TrueEMDCalculator = () => {
             <div className="bg-gray-50 p-4 rounded border border-gray-300">
               <h3 className="text-lg font-medium mb-2">Standard EMD:</h3>
               <ul className="mb-4">
-                {Object.keys(standardResults).map(predictor => (
+                {sortedPredictors.map(predictor => (
                   <li key={predictor} className={predictor === bestPredictor ? "font-bold text-green-600" : ""}>
                     {predictor}: {standardResults[predictor]}
                     {predictor === bestPredictor && " (Best Predictor)"}
@@ -567,7 +582,7 @@ const TrueEMDCalculator = () => {
             <div className="bg-blue-50 p-4 rounded border border-blue-300">
               <h3 className="text-lg font-medium mb-2">True EMD (Ideological Distance):</h3>
               <ul className="mb-4">
-                {Object.keys(trueEMDResults).map(predictor => (
+                {sortedPredictors.map(predictor => (
                   <li
                     key={predictor}
                     className={`${predictor === bestTrueEMDPredictor ? "font-bold text-blue-600" : ""} cursor-pointer hover:underline`}
