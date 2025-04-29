@@ -4,11 +4,11 @@ const TrueEMDCalculator = () => {
   // Initial data
   const initialProjections = {
     "David": {LPC: 178, CPC: 138, NDP: 5, Green: 1, BQ: 21, PPC: 0},
-    "Caleb": {LPC: 159, CPC: 157, NDP: 6, Green: 2, BQ: 20, PPC: 0},
+    "Caleb": {LPC: 158, CPC: 157, NDP: 6, Green: 2, BQ: 20, PPC: 0},
     "Xiyuan": {LPC: 180, CPC: 132, NDP: 10, Green: 1, BQ: 20, PPC: 0},
     "Sara": {LPC: 152, CPC: 154, NDP: 8, Green: 1, BQ: 28, PPC: 0},
     "Ces": {LPC: 165, CPC: 145, NDP: 7, Green: 1, BQ: 25, PPC: 0},
-    "Gaurav": {LPC: 190, CPC: 138, NDP: 6, Green: 1, BQ: 18, PPC: 0}
+    "Gaurav": {LPC: 185, CPC: 134, NDP: 6, Green: 1, BQ: 17, PPC: 0}
   };
 
   const lastElection = {LPC: 160, CPC: 119, NDP: 25, Green: 2, BQ: 32, PPC: 0};
